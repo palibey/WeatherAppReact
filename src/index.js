@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import pic from './Logo.png';
@@ -119,7 +119,7 @@ class WeatherApp extends React.Component {
 }
 function getFlag(country) {
     const addr = 'https://countryflagsapi.com/png/' + country;
-    return <div class="flag"><img  src={addr} /></div>;
+    return <div className="flag"><img src={addr} /></div>;
 }
 
 function WeatherInfo(props) {
