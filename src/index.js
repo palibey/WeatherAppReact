@@ -54,7 +54,6 @@ class WeatherApp extends React.Component {
 
             promises.push(promise)
         }
-
         return Promise.all(promises)
     }
 
@@ -110,7 +109,6 @@ class WeatherApp extends React.Component {
                 <div className='extras'>
                     {allExtra}
                 </div>
-
             </div>
         );
     }
@@ -142,8 +140,6 @@ function ExtraInfo(props) {
             <div className="sun-info"><p><b>Sunrise :</b>{props.sunrise.toString()}</p></div>
         </div>
     );
-
-
 }
 
 function parse1(obj) {
