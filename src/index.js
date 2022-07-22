@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
+import pic from './Logo.png';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 const ankara = [39, 32];
@@ -12,21 +13,23 @@ class WeatherApp extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            currentData: [],
+            currentData: []
         };
         this.handleChange = this.handleChange.bind(this);
     }
 
 
-    handleChange(e) {
+    async handleChange(e) {
         let collection = e.target.options;
         let arr = [];
         for (let i = 0; i < collection.length; i++) {
             if (collection[i].selected)
                 arr.push(collection[i].value);
         }
+        const result = await this.selectComp(arr);
+
         this.setState({
-            currentData: this.selectComp(arr).slice(),
+            currentData: result.slice(),
 
         })
     }
@@ -40,23 +43,24 @@ class WeatherApp extends React.Component {
         }
     }
     selectComp(nameArr) {
-        const newList = [];
+        const promises = [];
+
         for (let i = 0; i < nameArr.length; i++) {
-            fetch('https://api.openweathermap.org/data/2.5/weather?lat='
+            const promise = fetch('https://api.openweathermap.org/data/2.5/weather?lat='
                 + this.coordinateGiver(nameArr[i])[0] + '&lon='
                 + this.coordinateGiver(nameArr[i])[1] + '&appid='
                 + '8ceaf8462e60a49d7e34381c5afcb18e')
                 .then(r => r.json())
-                .then(data => newList.push(data));
+
+            promises.push(promise)
         }
-        return newList;
+
+        return Promise.all(promises)
     }
 
     render() {
         let allWeather = [];
         let allExtra = [];
-        console.log(this.state.currentData.length);
-        console.log(this.state.currentData);
         for (let i = 0; i < this.state.currentData.length; i++) {
             console.log(this.state.currentData);
             let myNum = this.state.currentData[i].main.feels_like;
@@ -85,7 +89,10 @@ class WeatherApp extends React.Component {
 
         return (
             <div className="weatherApp">
-                <div className="header-info">
+                <div className="header-contents">
+                    <div className="image">
+                        <img src={pic}/>
+                        </div>
                     <div className="select">
                         <label className="main-text">
                             Select City
@@ -97,19 +104,28 @@ class WeatherApp extends React.Component {
                         </label>
                     </div>
                 </div>
-                {allWeather}
-                {allExtra}
+                <div className='weather-data'>
+                    {allWeather}
+                </div>
+                <div className='extras'>
+                    {allExtra}
+                </div>
+
             </div>
         );
     }
 
 
 }
-
+function getFlag(country) {
+    const addr = 'https://countryflagsapi.com/png/' + country;
+    return <div class="flag"><img  src={addr} /></div>;
+}
 
 function WeatherInfo(props) {
     return (
         <div className="weather-info">
+            {getFlag(props.country)}
             <div className="country"><p><b>Country :</b> {props.country}  </p></div>
             <div className="description"><p><b>Description :</b>{props.description}</p></div>
             <div className="temperature"><p><b>Feels Like :</b>{props.feelsLike}</p></div>
