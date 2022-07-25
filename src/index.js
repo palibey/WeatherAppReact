@@ -30,7 +30,6 @@ class WeatherApp extends React.Component {
 
         this.setState({
             currentData: result.slice(),
-
         })
     }
     coordinateGiver(name){
